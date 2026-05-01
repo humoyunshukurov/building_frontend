@@ -37,13 +37,6 @@ export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return localRatings[productId] || { rating: baseRating, count: baseCount };
   }, [localRatings]);
 
-  const initProductRating = useCallback((productId: string, rating: number, count: number) => {
-    setLocalRatings(prev => {
-      if (prev[productId]) return prev;
-      return { ...prev, [productId]: { rating, count } };
-    });
-  }, []);
-
   return (
     <ReviewContext.Provider value={{ addReview, getProductReviews, getProductRating, localRatings }}>
       {children}

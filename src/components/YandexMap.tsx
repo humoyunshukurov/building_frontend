@@ -94,7 +94,7 @@ const YandexMap: React.FC<YandexMapProps> = ({ store, height = "220px" }) => {
         mapInstanceRef.current = null;
       }
     };
-  }, [store.id]);
+  }, [store]);
 
   return (
     <div className="relative rounded-2xl overflow-hidden border border-gray-100" style={{ height }}>
