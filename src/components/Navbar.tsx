@@ -8,7 +8,9 @@ interface NavbarProps {
   onCategoryChange?: (category: ProductCategory | null) => void;
   user?: { name: string; phone: string };
   onLogout?: () => void;
+  onLoginClick?: () => void;
   onMapOpen?: () => void;
+  onOrdersOpen?: () => void;
 }
 
 const CATEGORIES: { value: ProductCategory; label: string }[] = [
@@ -41,7 +43,7 @@ const notifTypeIcon: Record<string, string> = {
   general: "🔔",
 };
 
-const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, onMapOpen }) => {
+const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, onLoginClick, onMapOpen, onOrdersOpen }) => {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ProductCategory | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -170,6 +172,18 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
             </svg>
             <span className="hidden sm:block">Toshkent</span>
           </button>
+
+          {user && (
+            <button
+              onClick={onOrdersOpen}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span className="hidden sm:block">Buyurtmalarim</span>
+            </button>
+          )}
 
           {user && (
             <div className="relative">
@@ -358,6 +372,16 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
                 </>
               )}
             </div>
+          )}
+
+          {/* Kirish tugmasi (login qilinmagan bo'lsa) */}
+          {!user && (
+            <button
+              onClick={onLoginClick}
+              className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0"
+            >
+              Kirish
+            </button>
           )}
         </div>
       </div>

@@ -3,11 +3,12 @@ import { authApi } from "./api/api";
 
 interface AuthPageProps {
   onSuccess: (user: { name: string; phone: string }) => void;
+  onClose?: () => void;
 }
 
 type Mode = "login" | "register";
 
-const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
+const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onClose }) => {
   const [mode, setMode] = useState<Mode>("login");
 
   // Login
@@ -106,6 +107,25 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
     </button>
   );
 
+  // Parol kuchini baholash: 0 (bo'sh) — 1 (kuchsiz) — 2 (o'rta) — 3 (kuchli)
+  const passwordStrength = (pwd: string): number => {
+    if (!pwd) return 0;
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10 && /[A-Z]/.test(pwd) && /[0-9]/.test(pwd)) score++;
+    if (pwd.length >= 8 && /[a-z]/.test(pwd) && /[0-9]/.test(pwd) && /[^A-Za-z0-9]/.test(pwd)) score++;
+    return Math.min(score, 3);
+  };
+
+  const STRENGTH_META = [
+    { label: "", color: "" },
+    { label: "Kuchsiz", color: "bg-red-400" },
+    { label: "O'rta", color: "bg-amber-400" },
+    { label: "Kuchli", color: "bg-green-500" },
+  ];
+
+  const regStrength = passwordStrength(regPassword);
+
   return (
     <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center px-4 py-8 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -114,6 +134,16 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
       </div>
 
       <div className="w-full max-w-md relative">
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute -top-2 right-0 w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors shadow-sm z-10"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
         {/* Logo */}
         <div className="flex items-center gap-2 mb-8 justify-center">
           <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
@@ -201,20 +231,30 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 {/* Name */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Ism va familiya</label>
-                  <input type="text" value={regName}
-                    onChange={e => { setRegName(e.target.value); setRegErrors(p => ({...p, name: ""})); }}
-                    placeholder="Jasur Toshmatov"
-                    className={`w-full border-2 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none transition-all ${regErrors.name ? "border-red-300 bg-red-50" : "border-gray-200 bg-gray-50 focus:border-orange-400 focus:bg-white"}`} />
+                  <div className={`flex items-center gap-2.5 border-2 rounded-2xl px-4 py-3 transition-all ${regErrors.name ? "border-red-300 bg-red-50" : "border-gray-200 focus-within:border-orange-400 bg-gray-50 focus-within:bg-white"}`}>
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <input type="text" value={regName}
+                      onChange={e => { setRegName(e.target.value); setRegErrors(p => ({...p, name: ""})); }}
+                      placeholder="Jasur Toshmatov"
+                      className="flex-1 bg-transparent text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none" />
+                  </div>
                   <ErrMsg msg={regErrors.name} />
                 </div>
 
                 {/* Email */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Email <span className="text-gray-300 normal-case font-normal">(ixtiyoriy)</span></label>
-                  <input type="email" value={regEmail}
-                    onChange={e => { setRegEmail(e.target.value); setRegErrors(p => ({...p, email: ""})); }}
-                    placeholder="example@gmail.com"
-                    className={`w-full border-2 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none transition-all ${regErrors.email ? "border-red-300 bg-red-50" : "border-gray-200 bg-gray-50 focus:border-orange-400 focus:bg-white"}`} />
+                  <div className={`flex items-center gap-2.5 border-2 rounded-2xl px-4 py-3 transition-all ${regErrors.email ? "border-red-300 bg-red-50" : "border-gray-200 focus-within:border-orange-400 bg-gray-50 focus-within:bg-white"}`}>
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <input type="email" value={regEmail}
+                      onChange={e => { setRegEmail(e.target.value); setRegErrors(p => ({...p, email: ""})); }}
+                      placeholder="example@gmail.com"
+                      className="flex-1 bg-transparent text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none" />
+                  </div>
                   <ErrMsg msg={regErrors.email} />
                 </div>
 
@@ -237,12 +277,27 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Parol</label>
                   <div className={`flex items-center border-2 rounded-2xl px-4 py-3 transition-all ${regErrors.password ? "border-red-300 bg-red-50" : "border-gray-200 focus-within:border-orange-400 bg-gray-50 focus-within:bg-white"}`}>
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0 mr-2.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                     <input type={showRegPwd ? "text" : "password"} value={regPassword}
                       onChange={e => { setRegPassword(e.target.value); setRegErrors(p => ({...p, password: ""})); }}
                       placeholder="Kamida 6 ta belgi"
                       className="flex-1 bg-transparent text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none" />
                     <EyeBtn show={showRegPwd} toggle={() => setShowRegPwd(v => !v)} />
                   </div>
+                  {regPassword && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex-1 flex gap-1">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i <= regStrength ? STRENGTH_META[regStrength].color : "bg-gray-100"}`} />
+                        ))}
+                      </div>
+                      <span className={`text-xs font-medium ${regStrength === 1 ? "text-red-500" : regStrength === 2 ? "text-amber-500" : regStrength === 3 ? "text-green-600" : "text-gray-400"}`}>
+                        {STRENGTH_META[regStrength].label}
+                      </span>
+                    </div>
+                  )}
                   <ErrMsg msg={regErrors.password} />
                 </div>
 
@@ -250,12 +305,21 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Parolni tasdiqlang</label>
                   <div className={`flex items-center border-2 rounded-2xl px-4 py-3 transition-all ${regErrors.confirm ? "border-red-300 bg-red-50" : "border-gray-200 focus-within:border-orange-400 bg-gray-50 focus-within:bg-white"}`}>
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0 mr-2.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                     <input type={showRegConfirm ? "text" : "password"} value={regConfirm}
                       onChange={e => { setRegConfirm(e.target.value); setRegErrors(p => ({...p, confirm: ""})); }}
                       onKeyDown={e => e.key === "Enter" && handleRegister()}
                       placeholder="Parolni qayta kiriting"
                       className="flex-1 bg-transparent text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none" />
-                    <EyeBtn show={showRegConfirm} toggle={() => setShowRegConfirm(v => !v)} />
+                    {regConfirm && regPassword === regConfirm ? (
+                      <svg className="w-4 h-4 text-green-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <EyeBtn show={showRegConfirm} toggle={() => setShowRegConfirm(v => !v)} />
+                    )}
                   </div>
                   <ErrMsg msg={regErrors.confirm} />
                 </div>
@@ -263,10 +327,21 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
 
               <button onClick={handleRegister} disabled={regLoading}
                 className="w-full mt-6 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] disabled:opacity-60 text-white font-bold py-3.5 rounded-2xl transition-all text-sm shadow-lg shadow-orange-100 flex items-center justify-center gap-2">
-                {regLoading ? (<><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Ro'yxatdan o'tilmoqda...</>) : "Ro'yxatdan o'tish →"}
+                {regLoading ? (
+                  <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Ro'yxatdan o'tilmoqda...</>
+                ) : (
+                  <><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-7a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>Ro'yxatdan o'tish</>
+                )}
               </button>
 
-              <p className="text-center text-xs text-gray-400 mt-5">
+              <p className="flex items-center justify-center gap-1.5 text-[11px] text-gray-300 mt-4">
+                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Ma'lumotlaringiz xavfsiz saqlanadi
+              </p>
+
+              <p className="text-center text-xs text-gray-400 mt-3">
                 Hisobingiz bormi?{" "}
                 <button onClick={() => setMode("login")} className="text-orange-500 font-semibold hover:underline">Kirish</button>
               </p>

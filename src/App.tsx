@@ -16,6 +16,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(true);
   const [blockedMsg, setBlockedMsg] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Sahifa yuklanganda token va user ni tekshir
   useEffect(() => {
@@ -55,6 +56,11 @@ function App() {
     setUser(null);
   };
 
+  const handleAuthSuccess = (u: User) => {
+    setUser(u);
+    setShowAuthModal(false);
+  };
+
   if (checking) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -66,28 +72,27 @@ function App() {
     );
   }
 
-  if (!user) {
-    return (
-      <>
-        <AuthPage onSuccess={(u) => setUser(u)} />
-        {/* Bloklash xabari login sahifasida ko'rinadi */}
+  return (
+    <ReviewProvider>
+      <CartProvider>
+        <Home user={user} onLogout={handleLogout} onRequireAuth={() => setShowAuthModal(true)} />
+        <CartDrawer isLoggedIn={!!user} onRequireAuth={() => setShowAuthModal(true)} />
+
+        {showAuthModal && (
+          <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/30">
+            <AuthPage onSuccess={handleAuthSuccess} onClose={() => setShowAuthModal(false)} />
+          </div>
+        )}
+
+        {/* Bloklash xabari */}
         {blockedMsg && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-2xl shadow-xl text-sm font-medium flex items-center gap-2 animate-bounce">
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] bg-red-500 text-white px-6 py-3 rounded-2xl shadow-xl text-sm font-medium flex items-center gap-2 animate-bounce">
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>
             {blockedMsg}
           </div>
         )}
-      </>
-    );
-  }
-
-  return (
-    <ReviewProvider>
-      <CartProvider>
-        <Home user={user} onLogout={handleLogout} />
-        <CartDrawer />
       </CartProvider>
     </ReviewProvider>
   );

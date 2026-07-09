@@ -70,11 +70,31 @@ const adaptStore = (s: any) => ({
   },
 });
 
+// Mahsulot nomiga qarab rasm tanlash
+const NAME_PHOTO_RULES: [RegExp, string][] = [
+  [/sement|cement/i,                       '/photos/photo_2026-05-15_09-20-45.jpg'],
+  [/armatur/i,                             '/photos/photo_2026-05-15_09-21-08.jpg'],
+  [/g['']isht|gisht|brick/i,              '/photos/photo_2026-05-15_09-21-23.jpg'],
+  [/mineral|vata|jun|izolyasiya|insul/i,  '/photos/photo_2026-05-15_09-21-36.jpg'],
+  [/bo['']yoq|boyoq|paint|tikkurila|dulux/i, '/photos/photo_2026-05-15_09-21-54.jpg'],
+  [/laminat|parket|floor/i,               '/photos/photo_2026-05-15_09-22-09.jpg'],
+  [/quvur|pipe|pvc|plumb|santekhnika/i,   '/photos/photo_2026-05-15_09-22-23.jpg'],
+  [/gips|gypsum/i,                        '/photos/photo_2026-05-15_09-22-39.jpg'],
+];
+
+const getProductImageUrl = (p: any): string => {
+  if (p.imageUrl && !p.imageUrl.includes('placehold.co')) return p.imageUrl;
+  const name = (p.name || '') + ' ' + (p.nameUz || '') + ' ' + (p.category || '');
+  for (const [regex, photo] of NAME_PHOTO_RULES) {
+    if (regex.test(name)) return photo;
+  }
+  return '/photos/photo_2026-05-15_09-22-39.jpg';
+};
+
 // Backend Product → Frontend Product (imageUrl → images[], maydonlar qo'shish)
 const adaptProduct = (p: any) => {
-  const images = p.imageUrl
-    ? [{ id: p.id + '_img', url: p.imageUrl, alt: p.name, isPrimary: true }]
-    : [{ id: 'placeholder', url: `https://placehold.co/400x400/f97316/fff?text=${encodeURIComponent((p.name || 'M').charAt(0))}`, alt: p.name || '', isPrimary: true }];
+  const imageUrl = getProductImageUrl(p);
+  const images = [{ id: p.id + '_img', url: imageUrl, alt: p.name || '', isPrimary: true }];
 
   return {
     ...p,
@@ -162,7 +182,14 @@ export const ordersApi = {
       body: JSON.stringify({ productId, quantity, note }),
     }),
 
-  getMyOrders: () => request('/orders/my'),
+  getMyOrders: async () => {
+    const data = await request('/orders/my');
+    const list = Array.isArray(data) ? data : [];
+    return list.map((o: any) => ({
+      ...o,
+      product: o.product ? { ...o.product, imageUrl: getProductImageUrl(o.product) } : o.product,
+    }));
+  },
 };
 
 // ─── BILDIRISHNOMALAR ────────────────────────────────────

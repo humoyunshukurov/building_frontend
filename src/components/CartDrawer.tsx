@@ -5,7 +5,12 @@ import { ordersApi } from "../api/api";
 const formatPrice = (price: number): string =>
   new Intl.NumberFormat("uz-UZ").format(price) + " so'm";
 
-const CartDrawer: React.FC = () => {
+interface CartDrawerProps {
+  isLoggedIn: boolean;
+  onRequireAuth: () => void;
+}
+
+const CartDrawer: React.FC<CartDrawerProps> = ({ isLoggedIn, onRequireAuth }) => {
   const { items, isOpen, totalCount, totalPrice, removeFromCart, updateQuantity, clearCart, closeCart } = useCart();
   const [ordering, setOrdering] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -30,6 +35,10 @@ const CartDrawer: React.FC = () => {
   }, [isOpen]);
 
   const handleCheckout = async () => {
+    if (!isLoggedIn) {
+      onRequireAuth();
+      return;
+    }
     setOrdering(true);
     try {
       for (const item of items) {

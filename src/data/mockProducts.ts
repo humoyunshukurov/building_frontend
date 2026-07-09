@@ -77,7 +77,7 @@ export const mockProducts: Product[] = [
     oldPricePerUnit: 95000,
     currency: "UZS",
     images: [
-      { id: "img-1", url: "https://placehold.co/400x400/f5f0eb/666?text=Sement+M400", alt: "Portland Sement", isPrimary: true },
+      { id: "img-1", url: "/photos/photo_2026-05-15_09-20-45.jpg", alt: "Portland Sement", isPrimary: true },
     ],
     store: mockStores[0],
     inStock: true,
@@ -105,7 +105,7 @@ export const mockProducts: Product[] = [
     pricePerUnit: 22000,
     currency: "UZS",
     images: [
-      { id: "img-2", url: "https://placehold.co/400x400/e8e0d5/666?text=Armatura+12mm", alt: "Armatura", isPrimary: true },
+      { id: "img-2", url: "/photos/photo_2026-05-15_09-21-08.jpg", alt: "Armatura", isPrimary: true },
     ],
     store: mockStores[1],
     inStock: true,
@@ -132,7 +132,7 @@ export const mockProducts: Product[] = [
     pricePerUnit: 1200,
     currency: "UZS",
     images: [
-      { id: "img-3", url: "https://placehold.co/400x400/fdebd0/666?text=G'isht+M150", alt: "Keramik g'isht", isPrimary: true },
+      { id: "img-3", url: "/photos/photo_2026-05-15_09-21-23.jpg", alt: "Keramik g'isht", isPrimary: true },
     ],
     store: mockStores[2],
     inStock: true,
@@ -160,7 +160,7 @@ export const mockProducts: Product[] = [
     oldPricePerUnit: 55000,
     currency: "UZS",
     images: [
-      { id: "img-4", url: "https://placehold.co/400x400/fff9e6/666?text=Mineral+Jun", alt: "Mineral jun", isPrimary: true },
+      { id: "img-4", url: "/photos/photo_2026-05-15_09-21-36.jpg", alt: "Mineral jun", isPrimary: true },
     ],
     store: mockStores[0],
     inStock: true,
@@ -188,7 +188,7 @@ export const mockProducts: Product[] = [
     pricePerUnit: 195000,
     currency: "UZS",
     images: [
-      { id: "img-5", url: "https://placehold.co/400x400/f0f4ff/666?text=Bo'yoq+Oq", alt: "Oq bo'yoq", isPrimary: true },
+      { id: "img-5", url: "/photos/photo_2026-05-15_09-21-54.jpg", alt: "Oq bo'yoq", isPrimary: true },
     ],
     store: mockStores[3],
     inStock: false,
@@ -216,7 +216,7 @@ export const mockProducts: Product[] = [
     oldPricePerUnit: 150000,
     currency: "UZS",
     images: [
-      { id: "img-6", url: "https://placehold.co/400x400/f5e6d3/666?text=Laminat+Eman", alt: "Laminat parket", isPrimary: true },
+      { id: "img-6", url: "/photos/photo_2026-05-15_09-22-09.jpg", alt: "Laminat parket", isPrimary: true },
     ],
     store: mockStores[4],
     inStock: true,
@@ -244,7 +244,7 @@ export const mockProducts: Product[] = [
     pricePerUnit: 18500,
     currency: "UZS",
     images: [
-      { id: "img-7", url: "https://placehold.co/400x400/e8f4fd/666?text=PVC+Quvur", alt: "PVC quvur", isPrimary: true },
+      { id: "img-7", url: "/photos/photo_2026-05-15_09-22-23.jpg", alt: "PVC quvur", isPrimary: true },
     ],
     store: mockStores[2],
     inStock: true,
@@ -271,7 +271,7 @@ export const mockProducts: Product[] = [
     pricePerUnit: 72000,
     currency: "UZS",
     images: [
-      { id: "img-8", url: "https://placehold.co/400x400/f9f9f9/666?text=Gips+Kartoni", alt: "Gips kartoni", isPrimary: true },
+      { id: "img-8", url: "/photos/photo_2026-05-15_09-22-39.jpg", alt: "Gips kartoni", isPrimary: true },
     ],
     store: mockStores[1],
     inStock: true,

@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import ProductGrid from "./components/ProductGrid";
 import ProductModal from "./components/ProductModal";
 import MapPage from "./pages/MapPage";
+import OrdersPage from "./pages/OrdersPage";
 import { Product, ProductCategory, SortOption } from "./types";
 import { useCart } from "./context/CartContext";
 import { productsApi } from "./api/api";
@@ -17,11 +18,12 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 interface HomeProps {
-  user: { name: string; phone: string };
+  user: { name: string; phone: string } | null;
   onLogout: () => void;
+  onRequireAuth: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
+const Home: React.FC<HomeProps> = ({ user, onLogout, onRequireAuth }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showMap, setShowMap] = useState(false);
+  const [showOrders, setShowOrders] = useState(false);
 
   const { addToCart, totalCount: cartCount, openCart } = useCart();
 
@@ -91,6 +94,10 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     return <MapPage onBack={() => setShowMap(false)} />;
   }
 
+  if (showOrders) {
+    return <OrdersPage onBack={() => setShowOrders(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <ProductModal
@@ -98,14 +105,16 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         onClose={() => setSelectedProduct(null)}
         onFavoriteToggle={handleFavoriteToggle}
         isFavorite={selectedProduct ? favorites.has(selectedProduct.id) : false}
-        userName={user.name}
+        userName={user?.name ?? ""}
       />
       <Navbar
         onSearch={setSearchQuery}
         onCategoryChange={setActiveCategory}
-        user={user}
+        user={user ?? undefined}
         onLogout={onLogout}
+        onLoginClick={onRequireAuth}
         onMapOpen={() => setShowMap(true)}
+        onOrdersOpen={() => setShowOrders(true)}
       />
 
       <main className="max-w-7xl mx-auto px-4 py-6">
