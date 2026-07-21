@@ -28,6 +28,21 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onClose }) => {
   const [showRegConfirm, setShowRegConfirm] = useState(false);
   const [regErrors, setRegErrors] = useState<Record<string, string>>({});
   const [regLoading, setRegLoading] = useState(false);
+  const [showEmailDropdown, setShowEmailDropdown] = useState(false);
+
+  const EMAIL_DOMAINS = ["gmail.com", "mail.ru", "yandex.ru", "outlook.com", "icloud.com", "yahoo.com"];
+
+  const emailSuggestions = (() => {
+    if (!regEmail) return [];
+    const at = regEmail.indexOf("@");
+    if (at === -1) return EMAIL_DOMAINS.map(d => `${regEmail}@${d}`);
+    const local = regEmail.slice(0, at);
+    const domainPart = regEmail.slice(at + 1);
+    if (!local) return [];
+    return EMAIL_DOMAINS
+      .filter(d => d !== domainPart && d.startsWith(domainPart))
+      .map(d => `${local}@${d}`);
+  })();
 
   const formatPhone = (val: string) => {
     const digits = val.replace(/\D/g, "").slice(0, 9);
@@ -244,17 +259,33 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onClose }) => {
                 </div>
 
                 {/* Email */}
-                <div>
+                <div className="relative">
                   <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Email <span className="text-gray-300 normal-case font-normal">(ixtiyoriy)</span></label>
                   <div className={`flex items-center gap-2.5 border-2 rounded-2xl px-4 py-3 transition-all ${regErrors.email ? "border-red-300 bg-red-50" : "border-gray-200 focus-within:border-orange-400 bg-gray-50 focus-within:bg-white"}`}>
                     <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <input type="email" value={regEmail}
-                      onChange={e => { setRegEmail(e.target.value); setRegErrors(p => ({...p, email: ""})); }}
+                      onChange={e => { setRegEmail(e.target.value); setRegErrors(p => ({...p, email: ""})); setShowEmailDropdown(true); }}
+                      onFocus={() => setShowEmailDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowEmailDropdown(false), 150)}
                       placeholder="example@gmail.com"
                       className="flex-1 bg-transparent text-sm font-medium text-gray-800 placeholder:text-gray-300 focus:outline-none" />
                   </div>
+                  {showEmailDropdown && emailSuggestions.length > 0 && (
+                    <ul className="absolute z-20 left-0 right-0 mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-lg shadow-gray-100 overflow-hidden max-h-52 overflow-y-auto">
+                      {emailSuggestions.map(sugg => (
+                        <li key={sugg}>
+                          <button type="button"
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => { setRegEmail(sugg); setShowEmailDropdown(false); setRegErrors(p => ({...p, email: ""})); }}
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                            {sugg}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <ErrMsg msg={regErrors.email} />
                 </div>
 

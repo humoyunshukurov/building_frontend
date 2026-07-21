@@ -55,23 +55,22 @@ const MapPage: React.FC<MapPageProps> = ({ onBack }) => {
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+  const [loadError, setLoadError] = useState(false);
 
-  useEffect(() => {
-    const loadStores = async () => {
-      try {
-        const data = await storesApi.getAll();
-        setStores(data.map(adaptStore));
-      } catch {
-        // fallback to mock if backend not running
-        try {
-          const { mockProducts } = await import("../data/mockProducts");
-          const unique = Array.from(new Map((mockProducts as any[]).map((p: any) => [p.store.id, p.store])).values()) as Store[];
-          setStores(unique);
-        } catch {}
-      }
-    };
-    loadStores();
-  }, []);
+  const loadStores = async () => {
+    setLoading(true);
+    try {
+      const data = await storesApi.getAll();
+      setStores(data.map(adaptStore));
+      setLoadError(false);
+    } catch {
+      setStores([]);
+      setLoadError(true);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadStores(); }, []);
 
   useEffect(() => {
     if (stores.length === 0) return;
@@ -173,10 +172,24 @@ const MapPage: React.FC<MapPageProps> = ({ onBack }) => {
         {/* Map */}
         <div className="flex-1 relative order-1 lg:order-2" style={{ minHeight: "400px" }}>
           <div ref={mapRef} className="absolute inset-0" />
-          {loading && (
+          {loading && !loadError && (
             <div className="absolute inset-0 bg-gray-100 flex flex-col items-center justify-center gap-3">
               <svg className="w-8 h-8 text-orange-400 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
               <p className="text-sm text-gray-400">Xarita yuklanmoqda...</p>
+            </div>
+          )}
+          {loadError && (
+            <div className="absolute inset-0 bg-gray-100 flex flex-col items-center justify-center gap-3 px-6 text-center">
+              <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center">
+                <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              </div>
+              <p className="text-sm font-semibold text-gray-700">Do'konlarni yuklab bo'lmadi</p>
+              <button onClick={loadStores}
+                className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors">
+                Qayta urinish
+              </button>
             </div>
           )}
           {selectedStore && !loading && (
