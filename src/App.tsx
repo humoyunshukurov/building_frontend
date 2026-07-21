@@ -9,7 +9,7 @@ import { authApi } from './api/api';
 
 interface User {
   name: string;
-  phone: string;
+  email: string;
 }
 
 function App() {
@@ -24,10 +24,10 @@ function App() {
       if (authApi.isLoggedIn()) {
         try {
           const me = await authApi.getMe();
-          setUser({ name: me.name, phone: me.phone });
+          setUser({ name: me.name, email: me.email });
         } catch {
           const stored = authApi.getUser();
-          if (stored) setUser({ name: stored.name, phone: stored.phone });
+          if (stored) setUser({ name: stored.name, email: stored.email });
           else authApi.logout();
         }
       }

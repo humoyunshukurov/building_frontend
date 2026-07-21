@@ -6,7 +6,7 @@ import { notificationsApi } from "../api/api";
 interface NavbarProps {
   onSearch?: (query: string) => void;
   onCategoryChange?: (category: ProductCategory | null) => void;
-  user?: { name: string; phone: string };
+  user?: { name: string; email: string };
   onLogout?: () => void;
   onLoginClick?: () => void;
   onMapOpen?: () => void;
@@ -357,7 +357,7 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
                   <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 z-40 overflow-hidden">
                     <div className="px-4 py-3 border-b border-gray-50">
                       <p className="text-sm font-semibold text-gray-800">{user.name}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{user.email}</p>
                     </div>
                     <button
                       onClick={() => { setShowUserMenu(false); onLogout?.(); }}

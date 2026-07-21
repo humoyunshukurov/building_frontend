@@ -18,7 +18,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 interface HomeProps {
-  user: { name: string; phone: string } | null;
+  user: { name: string; email: string } | null;
   onLogout: () => void;
   onRequireAuth: () => void;
 }

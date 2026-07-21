@@ -112,20 +112,18 @@ const adaptProduct = (p: any) => {
 
 // ─── AUTH ────────────────────────────────────────────────
 export const authApi = {
-  register: async (dto: { name: string; phone: string; email?: string; password: string }) => {
-    const data = await request('/auth/register', {
+  // Emailga tasdiqlash kodi yuboradi
+  requestCode: (email: string) =>
+    request('/auth/request-code', {
       method: 'POST',
-      body: JSON.stringify(dto),
-    });
-    setToken(data.access_token);
-    setStoredUser(data.user);
-    return data;
-  },
+      body: JSON.stringify({ email }),
+    }),
 
-  login: async (phone: string, password: string) => {
-    const data = await request('/auth/login', {
+  // Kodni tekshiradi — kiradi yoki (birinchi marta bo'lsa) ro'yxatdan o'tkazadi
+  verifyCode: async (email: string, code: string, name?: string) => {
+    const data = await request('/auth/verify-code', {
       method: 'POST',
-      body: JSON.stringify({ phone, password }),
+      body: JSON.stringify({ email, code, name }),
     });
     setToken(data.access_token);
     setStoredUser(data.user);
