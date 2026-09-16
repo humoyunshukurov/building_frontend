@@ -1,7 +1,7 @@
 // REACT_APP_API_URL sozlanmagan bo'lsa (masalan, Vercel'da environment variable
 // qo'shilmagan bo'lsa), localhost o'rniga production backend'ga tushamiz — bo'lmasa
 // haqiqiy foydalanuvchilar uchun sayt butunlay ishlamay qoladi.
-const BASE = process.env.REACT_APP_API_URL || 'https://building-bekend.onrender.com/api';
+const BASE = process.env.REACT_APP_API_URL || 'https://building-bekend.fly.dev/api';
 
 // Token boshqaruvi
 const getToken = () => localStorage.getItem('bf_token');
