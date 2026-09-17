@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 * { box-sizing: border-box; }
+/* Fixed-position elements that hide themselves off-screen via transform
+   (CartDrawer, modals) still get counted in the page's scrollable area on
+   mobile - transform breaks their usual "fixed = relative to viewport,
+   ignored by overflow" behavior. This clips that instead of letting it
+   push the whole page sideways. */
+html, body { overflow-x: hidden; }
 body { margin: 0; padding: 0; background-color: #f5f5f5; -webkit-font-smoothing: antialiased; }
 
 .line-clamp-2 {

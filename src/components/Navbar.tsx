@@ -115,7 +115,8 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
     <>
     <header className="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
       {/* Top bar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+      <div className="flex items-center gap-3 sm:gap-4">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 flex-shrink-0">
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
@@ -128,8 +129,10 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
           </span>
         </a>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
+        {/* Search - a phone screen has no room for this alongside the logo
+            and action icons on one row, so it moves to its own full-width
+            row below (see .sm:hidden twin further down); sm+ keeps it here. */}
+        <form onSubmit={handleSearch} className="hidden sm:block flex-1 max-w-2xl">
           <div className="relative">
             <input
               type="text"
@@ -164,9 +167,12 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
           </div>
         </form>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button onClick={onMapOpen} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+        {/* Actions - own horizontal scroll as a safety net (same pattern as
+            the category pills below), so a logged-in user's full icon set
+            (map/orders/messages/notifications/cart/avatar) never forces
+            the page to overflow even on the narrowest phones. */}
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 overflow-x-auto scrollbar-none">
+          <button onClick={onMapOpen} className="flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors flex-shrink-0">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             </svg>
@@ -176,7 +182,7 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
           {user && (
             <button
               onClick={onOrdersOpen}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors flex-shrink-0"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -186,10 +192,10 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
           )}
 
           {user && (
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <button
                 onClick={() => { setShowMessages((v) => !v); setShowNotifs(false); setShowUserMenu(false); }}
-                className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+                className="relative flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -254,7 +260,7 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
             </div>
           )}
 
-          <button onClick={openCart} className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+          <button onClick={openCart} className="relative flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors flex-shrink-0">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
@@ -266,7 +272,7 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
 
           {/* Bildirishnomalar bell */}
           {user && (
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <button
                 onClick={handleOpenNotifs}
                 className="relative w-10 h-10 rounded-xl hover:bg-gray-100 flex items-center justify-center transition-colors"
@@ -338,7 +344,7 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
 
           {/* User avatar */}
           {user && (
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <button
                 onClick={() => { setShowUserMenu((v) => !v); setShowNotifs(false); }}
                 className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-xl hover:bg-gray-100 transition-colors"
@@ -384,6 +390,44 @@ const Navbar: FC<NavbarProps> = ({ onSearch, onCategoryChange, user, onLogout, o
             </button>
           )}
         </div>
+      </div>
+
+      {/* Search - mobile-only twin of the inline one above, full width on
+          its own row since there's no room for it next to the logo/icons. */}
+      <form onSubmit={handleSearch} className="sm:hidden mt-3">
+        <div className="relative">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => {
+              const val = e.target.value;
+              setQuery(val);
+              onSearch?.(val);
+            }}
+            placeholder="Mahsulot, material yoki do'kon qidiring..."
+            className="w-full pl-4 pr-20 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition-all duration-200 placeholder:text-gray-400"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => { setQuery(""); onSearch?.(""); }}
+              className="absolute right-11 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-orange-500 hover:bg-orange-600 rounded-lg flex items-center justify-center transition-colors"
+          >
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
+      </form>
       </div>
 
       {/* Category Pills */}
